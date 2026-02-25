@@ -34,7 +34,7 @@
   --color-border:     var(--mk-surface2);
 
   /* Text */
-  --color-text:       var(--mk-fg);
+  --color-text:       var(--mk-white);
   --color-muted:      var(--mk-comment);
 
   /* Accents — use these for interactive / highlighted elements */

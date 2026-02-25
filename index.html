@@ -45,6 +45,7 @@
             padding: 1.5rem 3rem;
             border-bottom: 1px solid transparent;
             transition: border-color 0.3s, background 0.3s;
+            max-height: 60px;
         }
         nav.scrolled {
             border-color: var(--border);
@@ -74,7 +75,7 @@
 
         /* HERO */
         .hero {
-            min-height: 100vh;
+            height: calc(100vh - 60px);
             display: grid;
             grid-template-columns: 1fr 1fr;
             position: relative;
@@ -96,7 +97,7 @@
             text-transform: uppercase;
             color: var(--accent);
             margin-bottom: 1.5rem;
-            opacity: 0;
+            opacity: 1;
             animation: fadeUp 0.8s ease 0.2s forwards;
         }
 
@@ -213,16 +214,54 @@
 
     <!-- NAV -->
     <nav id="nav">
-        <div class="nav-logo">MC</div>
+        <div class="nav-logo"><img src="images/MC.png" style="width:75px;height:75px;"></div>
         <ul class="nav-links">
             <li><a href="#about">About</a></li>
             <li><a href="#projects">Projects</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
-<!-- HERO -->
-<section>
-</section>
+    <!-- HERO -->   
+    <section class="hero">
+        <div class="hero-left">
+            <p class="hero-eyebrow">// Data Engineer</p>
+            <h1>
+                Matthew<br>
+                Cleveland
+            </h1>
+        </div>
+    </section>
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack">
+      <span>Python</span><span class="accent">✦</span>
+      <span>PyTorch</span><span class="accent">✦</span>
+      <span>TensorFlow</span><span class="accent">✦</span>
+      <span>Scikit-learn</span><span class="accent">✦</span>
+      <span>LLMs</span><span class="accent">✦</span>
+      <span>Neural Networks</span><span class="accent">✦</span>
+      <span>Data Pipelines</span><span class="accent">✦</span>
+      <span>SQL</span><span class="accent">✦</span>
+      <span>Spark</span><span class="accent">✦</span>
+      <span>MLOps</span><span class="accent">✦</span>
+      <span>Computer Vision</span><span class="accent">✦</span>
+      <span>NLP</span><span class="accent">✦</span>
+      <!-- duplicate for seamless loop -->
+      <span>Python</span><span class="accent">✦</span>
+      <span>PyTorch</span><span class="accent">✦</span>
+      <span>TensorFlow</span><span class="accent">✦</span>
+      <span>Scikit-learn</span><span class="accent">✦</span>
+      <span>LLMs</span><span class="accent">✦</span>
+      <span>Neural Networks</span><span class="accent">✦</span>
+      <span>Data Pipelines</span><span class="accent">✦</span>
+      <span>SQL</span><span class="accent">✦</span>
+      <span>Spark</span><span class="accent">✦</span>
+      <span>MLOps</span><span class="accent">✦</span>
+      <span>Computer Vision</span><span class="accent">✦</span>
+      <span>NLP</span><span class="accent">✦</span>
+    </div>
+  </div>
+
 
 <!-- FOOTER -->
   <footer>
