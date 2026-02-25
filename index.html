@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matthew Cleveland - Data Engineer</title>
+    <link rel="stylesheet" href="css/monokai-theme.css">
+    <script src="https://kit.fontawesome.com/13e7c32424.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            /* Local shorthands — all values pulled from monokai-theme.css */
+            --bg:      var(--color-bg);
+            --surface: var(--color-surface);
+            --surface2:var(--color-surface-2);
+            --accent:  var(--color-accent);
+            --accent2: var(--color-accent-2);
+            --accent3: var(--color-accent-3);
+            --accent4: var(--color-accent-4);
+            --accent5: var(--color-accent-5);
+            --orange:  var(--color-accent-6);
+            --text:    var(--color-text);
+            --muted:   var(--color-muted);
+            --border:  var(--color-border);
+        }
+        html { scroll-behavior: smooth;}
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 300;
+            overflow-x: hidden;
+           
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s, background 0.3s;
+        }
+        nav.scrolled {
+            border-color: var(--border);
+            background: rgba(39,40,34,0.92);
+            backdrop-filter: blur(12px);
+        }
+        .nav-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+        }
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 3rem 4rem 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-eyebrow {
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.2s forwards;
+        }
+
+        .hero-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(5rem, 10vw, 9rem);
+            line-height: 0.92;
+            letter-spacing: 0.02em;
+            opacity: 0;
+            animation: fadeUp 0.9s ease 0.4s forwards;
+        }
+
+        .hero-name .line-italic {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            color: var(--accent);
+            display: block;
+        }
+
+        .hero-desc {
+            max-width: 380px;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            color: var(--muted);
+            margin-top: 2rem;
+            opacity: 0;
+            animation: fadeUp 0.9s ease 0.7s forwards;
+        }
+
+        .hero-cta {
+            margin-top: 3rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            opacity: 0;
+            animation: fadeUp 0.9s ease 0.9s forwards;
+        }
+        /* Hero right — data viz decoration */
+        .hero-right {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .data-grid {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(18, 1fr);
+            gap: 1px;
+            opacity: 0;
+            animation: fadeIn 1.2s ease 0.5s forwards;
+        }
+
+        .data-cell {
+            background: var(--border);
+            transition: background 0.3s;
+        }
+        .data-cell.lit { background: var(--accent); opacity: 0.7; }
+        .data-cell.lit2 { background: var(--accent2); opacity: 0.5; }
+        .data-cell.lit3 { background: var(--accent3); opacity: 0.4; }
+        .data-cell.lit4 { background: var(--orange); opacity: 0.5; }
+
+        .hero-big-number {
+            position: absolute;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(120px, 20vw, 220px);
+            color: transparent;
+            -webkit-text-stroke: 1px var(--surface2);
+            letter-spacing: -0.02em;
+            user-select: none;
+            z-index: 1;
+            animation: fadeIn 1.5s ease 0.3s forwards;
+            opacity: 0;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 2rem 3rem;
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed; bottom: 0; width:90%;
+            color: var(--color-surface-2);
+        }
+        footer .copy {
+            font-size: 0.65rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+        }
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .social-links a {
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .social-links a:hover { color: var(--accent); }
+
+
+
+    </style>
+
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav id="nav">
+        <div class="nav-logo">MC</div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+<!-- HERO -->
+<section>
+</section>
+
+<!-- FOOTER -->
+  <footer>
+    <span class="copy">© 2025 Matthew Cleveland. All rights reserved.</span>
+    <div class="social-links">
+      <a href="https://www.instagram.com/darksideofthemat"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://www.threads.com/darksideofthemat"><i class="fa-brands fa-threads"></i></a>
+      <a href="https://www.github.com/DarkSideOfTheMat"><i class="fa-brands fa-github"></i></a>
+      <a href="https://www.linkedin.com/in/matthewclevelandva/"><i class="fa-brands fa-square-linkedin"></i></a>
+    </div>
+  </footer>
+
+</body>

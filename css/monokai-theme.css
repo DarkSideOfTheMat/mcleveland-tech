@@ -1,0 +1,133 @@
+/* =============================================================================
+   Monokai Theme — CSS Custom Properties
+   Based on the Sublime Text 3 Monokai color palette
+   Usage: import this file and use the variables anywhere in your project
+   ============================================================================= */
+
+:root {
+
+  /* ---------------------------------------------------------------------------
+     Core Palette — raw Monokai colors
+  --------------------------------------------------------------------------- */
+  --mk-bg:        #272822;  /* Editor background              */
+  --mk-surface:   #1e1f1a;  /* Deeper surface / sidebars      */
+  --mk-surface2:  #3e3d32;  /* Line highlight / raised UI     */
+  --mk-fg:        #f8f8f2;  /* Default foreground text        */
+  --mk-comment:   #75715e;  /* Comments / muted text          */
+
+  --mk-green:     #a6e22e;  /* Keywords, functions            */
+  --mk-pink:      #f92672;  /* Control flow, operators        */
+  --mk-cyan:      #66d9e8;  /* Class names, types             */
+  --mk-orange:    #fd971f;  /* Storage types                  */
+  --mk-yellow:    #e6db74;  /* Strings                        */
+  --mk-purple:    #ae81ff;  /* Constants, numbers             */
+  --mk-white:     #f8f8f2;  /* Plain text                     */
+
+  /* ---------------------------------------------------------------------------
+     Semantic Aliases — use these in your components
+  --------------------------------------------------------------------------- */
+
+  /* Backgrounds */
+  --color-bg:         var(--mk-bg);
+  --color-surface:    var(--mk-surface);
+  --color-surface-2:  var(--mk-surface2);
+  --color-border:     var(--mk-surface2);
+
+  /* Text */
+  --color-text:       var(--mk-fg);
+  --color-muted:      var(--mk-comment);
+
+  /* Accents — use these for interactive / highlighted elements */
+  --color-accent:     var(--mk-cyan);   /* Primary accent   */
+  --color-accent-2:   var(--mk-pink);    /* Danger / hot     */
+  --color-accent-3:   var(--mk-yellow);    /* Info / links     */
+  --color-accent-4:   var(--mk-green);  /* Warning          */
+  --color-accent-5:   var(--mk-purple);  /* Special          */
+  --color-accent-6:   var(--mk-orange);  /* Secondary warm   */
+
+  /* ---------------------------------------------------------------------------
+     Typography — syntax-inspired role mapping
+  --------------------------------------------------------------------------- */
+  --color-keyword:    var(--mk-pink);
+  --color-function:   var(--mk-green);
+  --color-string:     var(--mk-yellow);
+  --color-number:     var(--mk-purple);
+  --color-type:       var(--mk-cyan);
+  --color-constant:   var(--mk-purple);
+  --color-operator:   var(--mk-pink);
+  --color-comment:    var(--mk-comment);
+
+  /* ---------------------------------------------------------------------------
+     UI Component Tokens
+  --------------------------------------------------------------------------- */
+
+  /* Buttons */
+  --btn-primary-bg:       var(--mk-green);
+  --btn-primary-text:     var(--mk-bg);
+  --btn-primary-hover-bg: var(--mk-cyan);
+
+  --btn-ghost-text:       var(--mk-comment);
+  --btn-ghost-border:     var(--mk-surface2);
+  --btn-ghost-hover-text: var(--mk-fg);
+
+  /* Navigation */
+  --nav-bg:               transparent;
+  --nav-bg-scrolled:      rgba(39, 40, 34, 0.92);
+  --nav-border-scrolled:  var(--mk-surface2);
+  --nav-link:             var(--mk-comment);
+  --nav-link-hover:       var(--mk-green);
+  --nav-logo:             var(--mk-green);
+
+  /* Cards / Surfaces */
+  --card-bg:              var(--mk-surface);
+  --card-bg-hover:        var(--mk-surface2);
+  --card-border:          var(--mk-surface2);
+
+  /* Inputs / Forms */
+  --input-bg:             var(--mk-surface);
+  --input-border:         var(--mk-surface2);
+  --input-border-focus:   var(--mk-green);
+  --input-text:           var(--mk-fg);
+  --input-placeholder:    var(--mk-comment);
+
+  /* Skill / Progress Bars */
+  --bar-track:            var(--mk-surface2);
+  --bar-1:                var(--mk-green);
+  --bar-2:                var(--mk-cyan);
+  --bar-3:                var(--mk-pink);
+  --bar-4:                var(--mk-orange);
+  --bar-5:                var(--mk-purple);
+  --bar-6:                var(--mk-yellow);
+
+  /* Scrollbar */
+  --scrollbar-track:      var(--mk-surface);
+  --scrollbar-thumb:      var(--mk-surface2);
+  --scrollbar-thumb-hover:var(--mk-comment);
+
+  /* Selection highlight */
+  --selection-bg:         var(--mk-surface2);
+  --selection-text:       var(--mk-fg);
+
+  /* Focus ring */
+  --focus-ring:           var(--mk-green);
+}
+
+
+/* =============================================================================
+   Base Resets using theme tokens
+   ============================================================================= */
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
