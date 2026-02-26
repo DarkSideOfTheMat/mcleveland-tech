@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Matthew Cleveland — Data Engineer</title>
+    <link rel="icon" type="image/png" href="images/MC.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/monokai-theme.css">
@@ -102,6 +103,7 @@
             display: flex;
             flex-direction: column;
             max-width: 560px;
+            pointer-events: none;
         }
         .hero-eyebrow {
             font-size: 0.65rem;
@@ -140,6 +142,9 @@
             margin-top: 2.5rem;
             opacity: 0;
             animation: fadeUp 0.8s ease 0.85s forwards;
+        }
+        .hero-left a {
+            pointer-events: auto;
         }
         .btn-primary {
             display: inline-block;
