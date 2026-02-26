@@ -18,9 +18,8 @@
             --accent:  var(--color-accent);
             --accent2: var(--color-accent-2);
             --accent3: var(--color-accent-3);
-            --accent4: var(--color-accent-4);
+            --accent4: var(--color-accent-6);
             --accent5: var(--color-accent-5);
-            --orange:  var(--color-accent-6);
             --text:    var(--color-text);
             --muted:   var(--color-muted);
             --border:  var(--color-border);
@@ -47,6 +46,7 @@
             from { opacity: 0; }
             to   { opacity: 1; }
         }
+
 
         /* ── NAV ───────────────────────────────────────────── */
         nav {
@@ -90,17 +90,18 @@
 
         /* ── HERO ──────────────────────────────────────────── */
         .hero {
+            position: relative;
             min-height: calc(100vh - 60px);
-            display: grid;
-            grid-template-columns: 3fr 2fr;
-            align-items: end;
-            padding: 0 3rem 5rem;
-            gap: 4rem;
+            display: flex;
+            align-items: flex-end;
+            padding: 3rem 3rem 5rem;
         }
         .hero-left {
+            position: relative;
+            z-index: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
+            max-width: 560px;
         }
         .hero-eyebrow {
             font-size: 0.65rem;
@@ -158,48 +159,17 @@
             color: var(--bg);
         }
 
-        /* ── HERO RIGHT — STAT BLOCK ───────────────────────── */
-        .hero-right {
-            display: flex;
-            align-items: flex-end;
-            justify-content: flex-end;
-            opacity: 0;
-            animation: fadeIn 1s ease 0.6s forwards;
+        /* ── NODE GRAPH (full hero background) ────────────── */
+        .graph-container {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
         }
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1px;
-            background: var(--border);
-            border: 1px solid var(--border);
+        #node-graph {
+            display: block;
             width: 100%;
-            max-width: 340px;
+            height: 100%;
         }
-        .stat-card {
-            background: var(--surface);
-            padding: 1.75rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-        .stat-num {
-            font-family: 'Bebas Neue', Impact, sans-serif;
-            font-size: clamp(2.5rem, 4vw, 4rem);
-            line-height: 1;
-            display: block;
-        }
-        .stat-label {
-            font-size: 0.58rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--muted);
-            line-height: 1.6;
-            display: block;
-        }
-        .stat-card:nth-child(1) .stat-num { color: var(--accent); }
-        .stat-card:nth-child(2) .stat-num { color: var(--accent2); }
-        .stat-card:nth-child(3) .stat-num { color: var(--accent3); }
-        .stat-card:nth-child(4) .stat-num { color: var(--accent4); }
 
         /* ── ABOUT SECTION ─────────────────────────────────── */
         .about-section {
@@ -284,17 +254,9 @@
             .nav-links { gap: 1.5rem; }
 
             .hero {
-                grid-template-columns: 1fr;
                 padding: 3rem 1.5rem 4rem;
-                gap: 3rem;
-                align-items: start;
                 min-height: auto;
-                padding-top: 5rem;
             }
-            .hero-right {
-                justify-content: flex-start;
-            }
-            .stat-grid { max-width: 100%; }
 
             .about-section { padding: 3rem 1.5rem 4rem; }
 
@@ -336,25 +298,8 @@
                 </div>
             </div>
 
-            <div class="hero-right">
-                <div class="stat-grid">
-                    <div class="stat-card">
-                        <span class="stat-num">4</span>
-                        <span class="stat-label">Years at<br>Instagram</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-num">~2B</span>
-                        <span class="stat-label">Users<br>Impacted</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-num">4</span>
-                        <span class="stat-label">Core Metrics<br>Maintained</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-num">6</span>
-                        <span class="stat-label">Languages<br>&amp; Tools</span>
-                    </div>
-                </div>
+            <div class="graph-container">
+                <canvas id="node-graph"></canvas>
             </div>
         </section>
 
