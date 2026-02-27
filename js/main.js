@@ -4,6 +4,41 @@ window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 10);
 }, { passive: true });
 
+// ── THEME TOGGLE ────────────────────────────────────────────────
+(function () {
+    const toggle = document.getElementById('theme-toggle');
+    const root = document.documentElement;
+
+    // Determine initial theme: localStorage > prefers-color-scheme > dark
+    function getPreferred() {
+        const stored = localStorage.getItem('theme');
+        if (stored) return stored;
+        return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+
+    function applyTheme(theme) {
+        if (theme === 'light') {
+            root.setAttribute('data-theme', 'light');
+        } else {
+            root.removeAttribute('data-theme');
+        }
+        localStorage.setItem('theme', theme);
+        // Dispatch event so node graph can refresh colors
+        window.dispatchEvent(new CustomEvent('themechange'));
+    }
+
+    // Apply on load
+    applyTheme(getPreferred());
+
+    // Toggle on click
+    if (toggle) {
+        toggle.addEventListener('click', () => {
+            const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            applyTheme(current === 'light' ? 'dark' : 'light');
+        });
+    }
+})();
+
 // ── NODE GRAPH ──────────────────────────────────────────────────
 (function () {
     const canvas = document.getElementById('node-graph');
@@ -11,25 +46,32 @@ window.addEventListener('scroll', () => {
     const ctx = canvas.getContext('2d');
 
     // Read Monokai palette from computed CSS custom properties
-    const root = getComputedStyle(document.documentElement);
-    const getVar = (v) => root.getPropertyValue(v).trim();
+    function readColors() {
+        const cs = getComputedStyle(document.documentElement);
+        const getVar = (v) => cs.getPropertyValue(v).trim();
+        return {
+            cyan:   getVar('--mk-cyan')   || '#66d9e8',
+            pink:   getVar('--mk-pink')   || '#f92672',
+            yellow: getVar('--mk-yellow') || '#e6db74',
+            orange: getVar('--mk-orange') || '#fd971f',
+            purple: getVar('--mk-purple') || '#ae81ff',
+            green:  getVar('--mk-green')  || '#a6e22e',
+            muted:  getVar('--mk-comment')|| '#75715e',
+            bg:     getVar('--mk-bg')     || '#272822',
+        };
+    }
 
-    const COLORS = {
-        cyan:   getVar('--mk-cyan')   || '#66d9e8',
-        pink:   getVar('--mk-pink')   || '#f92672',
-        yellow: getVar('--mk-yellow') || '#e6db74',
-        orange: getVar('--mk-orange') || '#fd971f',
-        purple: getVar('--mk-purple') || '#ae81ff',
-        green:  getVar('--mk-green')  || '#a6e22e',
-        muted:  getVar('--mk-comment')|| '#75715e',
-        bg:     getVar('--mk-bg')     || '#272822',
-    };
+    let COLORS = readColors();
+
+    function getColorPool() {
+        return [
+            COLORS.cyan, COLORS.pink, COLORS.green,
+            COLORS.purple, COLORS.yellow, COLORS.orange,
+        ];
+    }
 
     // Color pool
-    const COLOR_POOL = [
-        COLORS.cyan, COLORS.pink, COLORS.green,
-        COLORS.purple, COLORS.yellow, COLORS.orange,
-    ];
+    let COLOR_POOL = getColorPool();
 
     // Shuffle helper
     function shuffle(arr) {
@@ -52,19 +94,30 @@ window.addEventListener('scroll', () => {
         { label: 'Pipelines' },      // 6
         { label: 'Data Modeling' },   // 7
         { label: 'Visualizations' },  // 8
+        { label: 'Hive' },           // 9
+        { label: 'Presto' },         // 10
+        { label: 'Postgres' },       // 11
+        { label: 'Chess' },          // 12
+        { label: 'Guitar' },         // 13
+        { label: 'Baseball' },       // 14
     ];
 
     // Edges: index pairs representing connections
     const EDGES = [
-        [0, 1], // Python — SQL
-        [0, 5], // Python — R
-        [5, 4], // R — JS
-        [3, 2], // PHP — Go
-        [2, 0], // Go — Python
-        [0, 3], // Python — PHP
-        [0, 4], // Python — JS
-        [6, 7], // Pipelines — Data Modeling
-        [7, 8], // Data Modeling — Visualizations
+        [0, 1],   // Python — SQL
+        [0, 5],   // Python — R
+        [5, 4],   // R — JS
+        [3, 2],   // PHP — Go
+        [2, 0],   // Go — Python
+        [0, 3],   // Python — PHP
+        [0, 4],   // Python — JS
+        [6, 7],   // Pipelines — Data Modeling
+        [7, 8],   // Data Modeling — Visualizations
+        [9, 10],  // Hive — Presto
+        [10, 11], // Presto — Postgres
+        [12, 13], // Chess — Guitar
+        [13, 14], // Guitar — Baseball
+        [12, 14], // Chess - Baseball
     ];
 
     // Assign colors: walk each connected chain, avoid neighbor repeats
@@ -119,17 +172,24 @@ window.addEventListener('scroll', () => {
         connectedPairs.add(a < b ? `${a}-${b}` : `${b}-${a}`);
     }
 
-    const NODE_RADIUS = 4;
-    const MOUSE_RADIUS = 100;
-    const REPULSE_STRENGTH = 0.8;
-    const NODE_REPULSE_RADIUS = 120;
-    const NODE_REPULSE_STRENGTH = 0.06;
-    const ATTRACT_STRENGTH = 0.005;
-    const ATTRACT_REST_DIST = 100;
-    const DAMPING = 0.96;
-    const DRIFT_FORCE = 0.08;
-    const EDGE_MARGIN = 40;
-    const EDGE_FORCE = 0.3;
+    // Physics params — exposed on window.nodeParams for settings panel
+    const DEFAULTS = {
+        NODE_RADIUS: 4,
+        MOUSE_RADIUS: 100,
+        REPULSE_STRENGTH: 0.4,
+        NODE_REPULSE_RADIUS: 120,
+        NODE_REPULSE_STRENGTH: 0.06,
+        ATTRACT_STRENGTH: 0.008,
+        ATTRACT_REST_DIST: 100,
+        VELOCITY_TRANSFER: 0.015,
+        DAMPING: 0.97,
+        DRIFT_FORCE: 0.06,
+        ORBIT_FORCE: 0.04,
+        EDGE_MARGIN: 100,
+        EDGE_FORCE: 0.6,
+    };
+    const P = { ...DEFAULTS };
+    window.nodeParams = P;
 
     let W, H, dpr;
     let mouse = { x: -9999, y: -9999 };
@@ -156,11 +216,13 @@ window.addEventListener('scroll', () => {
         nodes = NODE_DEFS.map((def) => ({
             x: spawnX + Math.random() * spawnW,
             y: spawnY + Math.random() * spawnH,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5,
+            vx: (Math.random() - 0.5) * 1.2,
+            vy: (Math.random() - 0.5) * 1.2,
             label: def.label,
             color: def.color,
-            radius: NODE_RADIUS,
+            radius: P.NODE_RADIUS,
+            phase: Math.random() * Math.PI * 2,
+            freq: 0.005 + Math.random() * 0.01,
         }));
     }
 
@@ -178,59 +240,85 @@ window.addEventListener('scroll', () => {
                 const key = i < j ? `${i}-${j}` : `${j}-${i}`;
                 if (connectedPairs.has(key)) {
                     // Connected: attract toward rest distance
-                    const delta = dist - ATTRACT_REST_DIST;
-                    const force = delta * ATTRACT_STRENGTH;
+                    const delta = dist - P.ATTRACT_REST_DIST;
+                    const force = delta * P.ATTRACT_STRENGTH;
                     const fx = (dx / dist) * force;
                     const fy = (dy / dist) * force;
                     a.vx -= fx;  a.vy -= fy;
                     b.vx += fx;  b.vy += fy;
-                } else if (dist < NODE_REPULSE_RADIUS) {
+                    // Velocity coupling — drag neighbor along
+                    const dvx = b.vx - a.vx;
+                    const dvy = b.vy - a.vy;
+                    a.vx += dvx * P.VELOCITY_TRANSFER;
+                    a.vy += dvy * P.VELOCITY_TRANSFER;
+                    b.vx -= dvx * P.VELOCITY_TRANSFER;
+                    b.vy -= dvy * P.VELOCITY_TRANSFER;
+                } else if (dist < P.NODE_REPULSE_RADIUS) {
                     // Unconnected: repel
-                    const force = (NODE_REPULSE_RADIUS - dist) / NODE_REPULSE_RADIUS * NODE_REPULSE_STRENGTH;
+                    const force = (P.NODE_REPULSE_RADIUS - dist) / P.NODE_REPULSE_RADIUS * P.NODE_REPULSE_STRENGTH;
                     const fx = (dx / dist) * force;
                     const fy = (dy / dist) * force;
                     a.vx += fx;  a.vy += fy;
                     b.vx -= fx;  b.vy -= fy;
+
+                    // Collision velocity transfer when close enough
+                    if (dist < P.NODE_RADIUS * 8) {
+                        const dvx = b.vx - a.vx;
+                        const dvy = b.vy - a.vy;
+                        a.vx += dvx * P.VELOCITY_TRANSFER;
+                        a.vy += dvy * P.VELOCITY_TRANSFER;
+                        b.vx -= dvx * P.VELOCITY_TRANSFER;
+                        b.vy -= dvy * P.VELOCITY_TRANSFER;
+                    }
                 }
             }
         }
 
+        const t = performance.now() * 0.001;
         for (const n of nodes) {
-            // Random drift
-            n.vx += (Math.random() - 0.5) * DRIFT_FORCE;
-            n.vy += (Math.random() - 0.5) * DRIFT_FORCE;
+            // Orbital drift — smooth sinusoidal push unique to each node
+            const angle = t * n.freq * Math.PI * 2 + n.phase;
+            n.vx += Math.cos(angle) * P.ORBIT_FORCE;
+            n.vy += Math.sin(angle) * P.ORBIT_FORCE;
+
+            // Random jitter
+            n.vx += (Math.random() - 0.5) * P.DRIFT_FORCE;
+            n.vy += (Math.random() - 0.5) * P.DRIFT_FORCE;
 
             // Mouse repulsion
             const dx = n.x - mouse.x;
             const dy = n.y - mouse.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < MOUSE_RADIUS && dist > 0) {
-                const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS * REPULSE_STRENGTH;
+            if (dist < P.MOUSE_RADIUS && dist > 0) {
+                const force = (P.MOUSE_RADIUS - dist) / P.MOUSE_RADIUS * P.REPULSE_STRENGTH;
                 n.vx += (dx / dist) * force;
                 n.vy += (dy / dist) * force;
             }
 
             // Damping
-            n.vx *= DAMPING;
-            n.vy *= DAMPING;
+            n.vx *= P.DAMPING;
+            n.vy *= P.DAMPING;
 
             // Move
             n.x += n.vx;
             n.y += n.vy;
 
             // Soft edge repulsion
-            if (n.x < EDGE_MARGIN) {
-                n.vx += (EDGE_MARGIN - n.x) / EDGE_MARGIN * EDGE_FORCE;
+            if (n.x < P.EDGE_MARGIN) {
+                n.vx += (P.EDGE_MARGIN - n.x) / P.EDGE_MARGIN * P.EDGE_FORCE;
             }
-            if (n.x > W - EDGE_MARGIN) {
-                n.vx -= (n.x - (W - EDGE_MARGIN)) / EDGE_MARGIN * EDGE_FORCE;
+            if (n.x > W - P.EDGE_MARGIN) {
+                n.vx -= (n.x - (W - P.EDGE_MARGIN)) / P.EDGE_MARGIN * P.EDGE_FORCE;
             }
-            if (n.y < EDGE_MARGIN) {
-                n.vy += (EDGE_MARGIN - n.y) / EDGE_MARGIN * EDGE_FORCE;
+            if (n.y < P.EDGE_MARGIN) {
+                n.vy += (P.EDGE_MARGIN - n.y) / P.EDGE_MARGIN * P.EDGE_FORCE;
             }
-            if (n.y > H - EDGE_MARGIN) {
-                n.vy -= (n.y - (H - EDGE_MARGIN)) / EDGE_MARGIN * EDGE_FORCE;
+            if (n.y > H - P.EDGE_MARGIN) {
+                n.vy -= (n.y - (H - P.EDGE_MARGIN)) / P.EDGE_MARGIN * P.EDGE_FORCE;
             }
+
+            // Keep node radius in sync with param
+            n.radius = P.NODE_RADIUS;
         }
     }
 
@@ -246,8 +334,8 @@ window.addEventListener('scroll', () => {
             const distToMouse = Math.sqrt(
                 (midX - mouse.x) ** 2 + (midY - mouse.y) ** 2
             );
-            const glow = distToMouse < MOUSE_RADIUS * 1.5
-                ? 0.15 + 0.25 * (1 - distToMouse / (MOUSE_RADIUS * 1.5))
+            const glow = distToMouse < P.MOUSE_RADIUS * 1.5
+                ? 0.15 + 0.25 * (1 - distToMouse / (P.MOUSE_RADIUS * 1.5))
                 : 0.15;
 
             ctx.beginPath();
@@ -265,7 +353,7 @@ window.addEventListener('scroll', () => {
             const distToMouse = Math.sqrt(
                 (n.x - mouse.x) ** 2 + (n.y - mouse.y) ** 2
             );
-            const isNear = distToMouse < MOUSE_RADIUS;
+            const isNear = distToMouse < P.MOUSE_RADIUS;
             const scale = isNear ? 1.4 : 1;
             const r = n.radius * scale;
 
@@ -340,4 +428,107 @@ window.addEventListener('scroll', () => {
             n.y = Math.min(Math.max(n.y, 0), H);
         }
     });
+
+    // Theme change: re-read colors, re-color nodes, rebuild color pool
+    window.addEventListener('themechange', () => {
+        COLORS = readColors();
+        COLOR_POOL = getColorPool();
+
+        // Re-run BFS coloring with new palette
+        const recolored = new Array(NODE_DEFS.length).fill(null);
+        for (let start = 0; start < NODE_DEFS.length; start++) {
+            if (recolored[start]) continue;
+            const pool = shuffle(COLOR_POOL);
+            let poolIdx = 0;
+            const queue = [start];
+            recolored[start] = '?';
+            while (queue.length) {
+                const idx = queue.shift();
+                const neighborColors = adj[idx].map((n) => recolored[n]).filter(Boolean);
+                let chosen = null;
+                for (let tries = 0; tries < COLOR_POOL.length; tries++) {
+                    const candidate = pool[(poolIdx + tries) % pool.length];
+                    if (!neighborColors.includes(candidate)) {
+                        chosen = candidate;
+                        poolIdx = (poolIdx + tries + 1) % pool.length;
+                        break;
+                    }
+                }
+                if (!chosen) {
+                    chosen = pool[poolIdx % pool.length];
+                    poolIdx++;
+                }
+                recolored[idx] = chosen;
+                NODE_DEFS[idx].color = chosen;
+                if (nodes[idx]) nodes[idx].color = chosen;
+                for (const nb of adj[idx]) {
+                    if (!recolored[nb] || recolored[nb] === '?') {
+                        if (!recolored[nb]) {
+                            recolored[nb] = '?';
+                            queue.push(nb);
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Expose defaults for reset
+    window.nodeDefaults = DEFAULTS;
+})();
+
+// ── SETTINGS PANEL ──────────────────────────────────────────────
+(function () {
+    const toggle = document.getElementById('settings-toggle');
+    const panel = document.getElementById('settings-panel');
+    const reset = document.getElementById('settings-reset');
+    if (!toggle || !panel) return;
+
+    toggle.addEventListener('click', () => {
+        panel.classList.toggle('open');
+    });
+
+    const SLIDERS = [
+        { id: 's-mouse-radius',    val: 'v-mouse-radius',    key: 'MOUSE_RADIUS',          decimals: 0 },
+        { id: 's-mouse-strength',  val: 'v-mouse-strength',  key: 'REPULSE_STRENGTH',       decimals: 2 },
+        { id: 's-node-repulse-r',  val: 'v-node-repulse-r',  key: 'NODE_REPULSE_RADIUS',    decimals: 0 },
+        { id: 's-node-repulse-s',  val: 'v-node-repulse-s',  key: 'NODE_REPULSE_STRENGTH',  decimals: 3 },
+        { id: 's-attract-s',       val: 'v-attract-s',       key: 'ATTRACT_STRENGTH',       decimals: 3 },
+        { id: 's-attract-d',       val: 'v-attract-d',       key: 'ATTRACT_REST_DIST',      decimals: 0 },
+        { id: 's-vel-transfer',    val: 'v-vel-transfer',    key: 'VELOCITY_TRANSFER',      decimals: 3 },
+        { id: 's-damping',         val: 'v-damping',         key: 'DAMPING',                decimals: 3 },
+        { id: 's-drift',           val: 'v-drift',           key: 'DRIFT_FORCE',            decimals: 3 },
+        { id: 's-orbit',           val: 'v-orbit',           key: 'ORBIT_FORCE',            decimals: 3 },
+        { id: 's-edge-margin',     val: 'v-edge-margin',     key: 'EDGE_MARGIN',            decimals: 0 },
+        { id: 's-edge-force',      val: 'v-edge-force',      key: 'EDGE_FORCE',             decimals: 2 },
+        { id: 's-node-radius',     val: 'v-node-radius',     key: 'NODE_RADIUS',            decimals: 1 },
+    ];
+
+    const P = window.nodeParams;
+
+    for (const s of SLIDERS) {
+        const input = document.getElementById(s.id);
+        const display = document.getElementById(s.val);
+        if (!input || !display) continue;
+
+        input.addEventListener('input', () => {
+            const v = parseFloat(input.value);
+            P[s.key] = v;
+            display.textContent = v.toFixed(s.decimals);
+        });
+    }
+
+    if (reset) {
+        reset.addEventListener('click', () => {
+            const defaults = window.nodeDefaults;
+            for (const s of SLIDERS) {
+                const input = document.getElementById(s.id);
+                const display = document.getElementById(s.val);
+                if (!input || !display || !defaults) continue;
+                P[s.key] = defaults[s.key];
+                input.value = defaults[s.key];
+                display.textContent = defaults[s.key].toFixed(s.decimals);
+            }
+        });
+    }
 })();
