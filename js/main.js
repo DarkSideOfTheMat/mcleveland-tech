@@ -100,6 +100,10 @@ window.addEventListener('scroll', () => {
         { label: 'Chess' },          // 12
         { label: 'Guitar' },         // 13
         { label: 'Baseball' },       // 14
+        { label: 'Insights' },       // 15
+        { label: 'Engagement' },     // 16
+        { label: 'Growth' },         // 17
+        { label: 'Logging' }, // 18
     ];
 
     // Edges: index pairs representing connections
@@ -117,7 +121,11 @@ window.addEventListener('scroll', () => {
         [10, 11], // Presto — Postgres
         [12, 13], // Chess — Guitar
         [13, 14], // Guitar — Baseball
-        [12, 14], // Chess - Baseball
+        [12, 14], // Chess — Baseball
+        [7, 15],  // Data Modeling — Insights
+        [15, 8],  // Insights — Visualizations
+        [16, 17], // Engagement — Growth
+        [6, 18], // Pipelines - Logging
     ];
 
     // Assign colors: walk each connected chain, avoid neighbor repeats
@@ -208,14 +216,58 @@ window.addEventListener('scroll', () => {
     }
 
     function initNodes() {
-        // Spawn clustered in the right side of the canvas
-        const spawnX = W * 0.55;
-        const spawnW = W * 0.4;
-        const spawnY = H * 0.1;
-        const spawnH = H * 0.5;
-        nodes = NODE_DEFS.map((def) => ({
-            x: spawnX + Math.random() * spawnW,
-            y: spawnY + Math.random() * spawnH,
+        // Find connected components
+        const visited = new Array(NODE_DEFS.length).fill(false);
+        const components = [];
+        for (let i = 0; i < NODE_DEFS.length; i++) {
+            if (visited[i]) continue;
+            const comp = [];
+            const queue = [i];
+            visited[i] = true;
+            while (queue.length) {
+                const idx = queue.shift();
+                comp.push(idx);
+                for (const nb of adj[idx]) {
+                    if (!visited[nb]) {
+                        visited[nb] = true;
+                        queue.push(nb);
+                    }
+                }
+            }
+            components.push(comp);
+        }
+
+        // Assign each cluster a spawn center spread across the canvas
+        const pad = 0.15;
+        const areaW = W * (1 - pad * 2);
+        const areaH = H * (1 - pad * 2);
+        const cols = Math.ceil(Math.sqrt(components.length));
+        const rows = Math.ceil(components.length / cols);
+        const cellW = areaW / cols;
+        const cellH = areaH / rows;
+        const clusterRadius = Math.min(cellW, cellH) * 0.2;
+
+        const shuffledComponents = shuffle(components);
+
+        const spawnPositions = new Array(NODE_DEFS.length);
+        shuffledComponents.forEach((comp, ci) => {
+            const col = ci % cols;
+            const row = Math.floor(ci / cols);
+            const cx = W * pad + cellW * (col + 0.5);
+            const cy = H * pad + cellH * (row + 0.5);
+            for (const idx of comp) {
+                const angle = Math.random() * Math.PI * 2;
+                const r = Math.random() * clusterRadius;
+                spawnPositions[idx] = {
+                    x: cx + Math.cos(angle) * r,
+                    y: cy + Math.sin(angle) * r,
+                };
+            }
+        });
+
+        nodes = NODE_DEFS.map((def, i) => ({
+            x: spawnPositions[i].x,
+            y: spawnPositions[i].y,
             vx: (Math.random() - 0.5) * 1.2,
             vy: (Math.random() - 0.5) * 1.2,
             label: def.label,
