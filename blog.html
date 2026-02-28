@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact — Matthew Cleveland</title>
+    <title>Blog — Matthew Cleveland</title>
     <script>
         // Apply saved theme immediately to prevent flash
         (function(){var t=localStorage.getItem('theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');})();
@@ -115,8 +115,8 @@
         [data-theme="light"] .theme-toggle .fa-sun  { display: inline; }
         [data-theme="light"] .theme-toggle .fa-moon { display: none; }
 
-        /* ── CONTACT SECTION ──────────────────────────────── */
-        .contact-section {
+        /* ── BLOG SECTION ────────────────────────────────────── */
+        .blog-section {
             padding: 5rem 3rem 6rem;
             min-height: calc(100vh - 60px - 80px);
         }
@@ -139,7 +139,7 @@
             opacity: 0;
             animation: fadeUp 0.8s ease 0.4s forwards;
         }
-        .contact-intro {
+        .blog-intro {
             font-size: 0.85rem;
             line-height: 1.9;
             color: var(--muted);
@@ -149,121 +149,226 @@
             animation: fadeUp 0.8s ease 0.5s forwards;
         }
 
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 4rem;
+        /* ── BLOG LISTING ────────────────────────────────────── */
+        .blog-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 720px;
             opacity: 0;
             animation: fadeUp 0.8s ease 0.6s forwards;
         }
-
-        /* ── FORM ─────────────────────────────────────────── */
-        .contact-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-            max-width: 560px;
+        .blog-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.75rem 2rem;
+            transition: border-color 0.2s, background 0.2s;
         }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.35rem;
+        .blog-card:hover {
+            border-color: var(--accent);
+            background: var(--surface2);
         }
-        .form-group label {
+        .blog-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             font-size: 0.6rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
             color: var(--muted);
+            margin-bottom: 0.75rem;
         }
-        .form-group input,
-        .form-group textarea {
-            background: var(--surface);
-            border: 1px solid var(--border);
+        .blog-card-dot {
+            color: var(--border);
+        }
+        .blog-card-title {
+            font-family: 'Bebas Neue', Impact, sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 0.03em;
+            line-height: 1.15;
+            margin: 0 0 0.75rem;
             color: var(--text);
-            font-family: 'Courier New', Courier, monospace;
+        }
+        .blog-card-summary {
             font-size: 0.8rem;
-            font-weight: 500;
-            padding: 0.75rem 1rem;
-            outline: none;
+            line-height: 1.8;
+            color: var(--muted);
+            margin: 0 0 1rem;
+        }
+        .blog-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .blog-tag {
+            font-size: 0.55rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid var(--border);
+            padding: 0.2rem 0.5rem;
             transition: border-color 0.2s;
         }
-        .form-group input:focus,
-        .form-group textarea:focus {
+        .blog-card:hover .blog-tag {
             border-color: var(--accent);
         }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 160px;
-        }
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: var(--muted);
-            opacity: 0.5;
-        }
-
-        .btn-submit {
-            display: inline-block;
-            background: var(--accent4);
-            color: var(--bg);
-            border: none;
-            font-family: 'Courier New', monospace;
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            padding: 0.85rem 2rem;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-            align-self: flex-start;
-        }
-        .btn-submit:hover {
-            background: var(--accent);
-            color: var(--bg);
-        }
-
-        /* ── SIDEBAR ──────────────────────────────────────── */
-        .contact-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 2.5rem;
-        }
-        .sidebar-block h3 {
-            font-size: 0.6rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin: 0 0 0.75rem;
-        }
-        .sidebar-email a {
-            color: var(--text);
-            text-decoration: none;
+        .blog-empty {
             font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        /* ── BLOG POST READER ────────────────────────────────── */
+        .blog-reader {
+            padding: 5rem 3rem 6rem;
+            min-height: calc(100vh - 60px - 80px);
+        }
+        .blog-post {
+            max-width: 720px;
+        }
+        .blog-back {
+            display: inline-block;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 2rem;
             transition: color 0.2s;
         }
-        .sidebar-email a:hover {
+        .blog-back:hover {
             color: var(--accent);
         }
-        .sidebar-socials {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        .sidebar-socials a {
+        .blog-post-meta {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
             color: var(--muted);
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: color 0.2s;
+            margin-bottom: 0.75rem;
         }
-        .sidebar-socials a:hover {
+        .blog-post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* ── ARTICLE CONTENT ─────────────────────────────────── */
+        .blog-article h1 {
+            font-family: 'Bebas Neue', Impact, sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            letter-spacing: 0.04em;
+            line-height: 1.05;
+            margin: 0 0 2rem;
+            color: var(--text);
+        }
+        .blog-article h2 {
+            font-family: 'Bebas Neue', Impact, sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 0.03em;
+            line-height: 1.15;
+            margin: 2.5rem 0 1rem;
+            color: var(--text);
+        }
+        .blog-article h3 {
+            font-family: 'Bebas Neue', Impact, sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.03em;
+            margin: 2rem 0 0.75rem;
+            color: var(--text);
+        }
+        .blog-article p {
+            font-size: 0.85rem;
+            line-height: 1.9;
+            color: var(--muted);
+            margin: 0 0 1.25rem;
+        }
+        .blog-article a {
             color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
         }
-        .sidebar-socials a i {
-            font-size: 1rem;
-            width: 1.25rem;
-            text-align: center;
+        .blog-article a:hover {
+            border-bottom-color: var(--accent);
+        }
+        .blog-article strong {
+            color: var(--text);
+            font-weight: 700;
+        }
+        .blog-article em {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-style: italic;
+            color: var(--accent3);
+        }
+        .blog-article ul,
+        .blog-article ol {
+            padding-left: 1.25rem;
+            margin: 0 0 1.25rem;
+        }
+        .blog-article li {
+            font-size: 0.85rem;
+            line-height: 1.9;
+            color: var(--muted);
+            margin-bottom: 0.35rem;
+        }
+        .blog-article blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 0.75rem 1.25rem;
+            margin: 1.5rem 0;
+            background: var(--surface);
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-style: italic;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--accent3);
+        }
+        .blog-article code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            background: var(--surface);
+            padding: 0.15rem 0.4rem;
+            color: var(--accent2);
+        }
+        .blog-article .code-block {
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        .blog-article .code-block code {
+            background: none;
+            padding: 0;
+            font-size: 0.78rem;
+            line-height: 1.7;
+            color: var(--text);
+        }
+        .blog-article .code-lang {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            font-size: 0.5rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .blog-article hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2.5rem 0;
+        }
+        .blog-article img {
+            max-width: 100%;
+            height: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
         }
 
         /* ── FOOTER ────────────────────────────────────────── */
@@ -298,12 +403,10 @@
             nav { padding: 0 1.5rem; }
             .nav-links { gap: 1.5rem; }
 
-            .contact-section { padding: 3rem 1.5rem 4rem; }
+            .blog-section { padding: 3rem 1.5rem 4rem; }
+            .blog-reader { padding: 3rem 1.5rem 4rem; }
 
-            .contact-grid {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
+            .blog-card { padding: 1.25rem 1.5rem; }
 
             footer {
                 padding: 1.5rem;
@@ -323,8 +426,8 @@
         <ul class="nav-links">
             <li><a href="index.html#about">About</a></li>
             <li><a href="projects.html">Projects</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="contact.html" class="active">Contact</a></li>
+            <li><a href="blog.html" class="active">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
         </ul>
         <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
             <i class="fa-solid fa-moon"></i>
@@ -334,67 +437,19 @@
 
     <main>
 
-        <!-- CONTACT -->
-        <section class="contact-section">
-            <p class="section-eyebrow">// Get In Touch</p>
-            <h1 class="section-heading">Let's Connect</h1>
-            <p class="contact-intro">
-                Have a project in mind, a question about data engineering, or just want to say hello?
-                I'd love to hear from you. Drop me a message below or reach out directly — I'm always
-                open to interesting conversations and new opportunities.
+        <!-- BLOG LISTING -->
+        <section class="blog-section" id="blog-listing">
+            <p class="section-eyebrow">// Writing</p>
+            <h1 class="section-heading">Blog</h1>
+            <p class="blog-intro">
+                Thoughts on data engineering, side projects, and things I'm learning along the way.
             </p>
+            <div class="blog-list" id="blog-list"></div>
+        </section>
 
-            <div class="contact-grid">
-
-                <!-- FORM -->
-                <form class="contact-form" id="contact-form">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" placeholder="Your name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="Your email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">Subject</label>
-                        <input type="text" id="subject" name="subject" placeholder="Subject">
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" placeholder="Your message..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn-submit">Send Message</button>
-                </form>
-
-                <!-- SIDEBAR -->
-                <aside class="contact-sidebar">
-                    <div class="sidebar-block">
-                        <h3>Email</h3>
-                        <div class="sidebar-email">
-                            <a href="mailto:mclevelandva@gmail.com">mclevelandva@gmail.com</a>
-                        </div>
-                    </div>
-                    <div class="sidebar-block">
-                        <h3>Social</h3>
-                        <div class="sidebar-socials">
-                            <a href="https://www.linkedin.com/in/matthewclevelandva/" target="_blank" rel="noopener">
-                                <i class="fa-brands fa-linkedin"></i> LinkedIn
-                            </a>
-                            <a href="https://www.github.com/DarkSideOfTheMat" target="_blank" rel="noopener">
-                                <i class="fa-brands fa-github"></i> GitHub
-                            </a>
-                            <a href="https://www.instagram.com/darksideofthemat" target="_blank" rel="noopener">
-                                <i class="fa-brands fa-instagram"></i> Instagram
-                            </a>
-                            <a href="https://www.threads.com/darksideofthemat" target="_blank" rel="noopener">
-                                <i class="fa-brands fa-threads"></i> Threads
-                            </a>
-                        </div>
-                    </div>
-                </aside>
-
-            </div>
+        <!-- BLOG POST READER -->
+        <section class="blog-reader" id="blog-reader" style="display: none;">
+            <div class="blog-post" id="blog-post"></div>
         </section>
 
     </main>
@@ -410,7 +465,7 @@
         </div>
     </footer>
 
-    <script src="js/contact.js"></script>
+    <script src="js/blog.js"></script>
 
 </body>
 </html>

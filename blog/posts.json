@@ -1,0 +1,15 @@
+[
+  {
+    "slug": "hello-world",
+    "title": "Hello World — First Post",
+    "date": "2026-02-28",
+    "tags": [
+      "meta",
+      "personal"
+    ],
+    "summary": "Welcome to my blog. A space for thoughts on data engineering, side projects, and things I'm learning along the way.",
+    "wordCount": 157,
+    "readingTime": "1 min read",
+    "file": "blog/posts/hello-world.md"
+  }
+]
