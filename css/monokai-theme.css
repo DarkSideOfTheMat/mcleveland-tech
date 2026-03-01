@@ -131,3 +131,26 @@
   outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
 }
+
+/* =============================================================================
+   Light Mode — Monokai Light Sun overrides
+   Activated via data-theme="light" on <html>
+   ============================================================================= */
+
+[data-theme="light"] {
+  --mk-bg:        #F3E9E2;
+  --mk-surface:   #E4DDD9;
+  --mk-surface2:  #F3E9E2;
+  --mk-fg:        #2C2922;
+  --mk-comment:   #68686E;
+
+  --mk-green:     #56905B;
+  --mk-pink:      #E54F74;
+  --mk-cyan:      #3BADE1;
+  --mk-orange:    #C26746;
+  --mk-yellow:    #D9C34A;
+  --mk-purple:    #845ca7;
+  --mk-white:     #2C2922;
+
+  --nav-bg-scrolled: rgba(212, 208, 207, 0.92);
+}
