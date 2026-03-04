@@ -132,6 +132,22 @@
   outline-offset: 3px;
 }
 
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--focus-ring);
+  color: var(--color-bg);
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+}
+.skip-link:focus {
+  top: 0;
+}
+
 /* =============================================================================
    Light Mode — Monokai Light Sun overrides
    Activated via data-theme="light" on <html>
