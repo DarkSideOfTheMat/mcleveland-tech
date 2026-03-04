@@ -8,7 +8,14 @@ Personal portfolio/resume website for Matthew Cleveland, Data Engineer.
 - No package manager (no npm/yarn/pip)
 
 ## Running Locally
-Open `index.html` directly in a browser — no server required.
+Most pages (`index.html`, `contact.html`, etc.) can be opened directly in a browser.
+
+The blog page requires a local HTTP server because `blog.js` uses `fetch()` to load `posts.json` and markdown files, which browsers block on `file://` URLs:
+
+```bash
+python3 -m http.server 8080 --directory .
+# then open http://localhost:8080/blog.html
+```
 
 ## Project Structure
 ```
