@@ -62,11 +62,14 @@ function generateSlug(filename) {
 
 const files = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md'));
 
-const posts = files.map(file => {
+const VALID_STATUSES = ['Published', 'In_Review', 'Work_In_Progress'];
+
+const allPosts = files.map(file => {
     const raw = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
     const { meta, body } = parseFrontMatter(raw);
     const words = countWords(body);
     const slug = generateSlug(file);
+    const status = meta.status || 'Work_In_Progress';
 
     return {
         slug,
@@ -74,11 +77,16 @@ const posts = files.map(file => {
         date:        meta.date || null,
         tags:        meta.tags ? meta.tags.split(',').map(t => t.trim()) : [],
         summary:     meta.summary || '',
+        status,
         wordCount:   words,
         readingTime: readingTime(words),
         file:        `blog/posts/${file}`
     };
 });
+
+// Only publish posts with status: Published
+const posts = allPosts.filter(p => p.status === 'Published');
+const skipped = allPosts.filter(p => p.status !== 'Published');
 
 // Sort newest first
 posts.sort((a, b) => {
@@ -89,7 +97,13 @@ posts.sort((a, b) => {
 
 fs.writeFileSync(OUTPUT, JSON.stringify(posts, null, 2) + '\n');
 
-console.log(`✓ Generated metadata for ${posts.length} post(s) → ${OUTPUT}`);
+console.log(`✓ Generated metadata for ${posts.length} published post(s) → ${OUTPUT}`);
 posts.forEach(p => {
-    console.log(`  • ${p.slug}  (${p.readingTime}, ${p.wordCount} words)`);
+    console.log(`  • ${p.slug}  [${p.status}]  (${p.readingTime}, ${p.wordCount} words)`);
 });
+if (skipped.length) {
+    console.log(`\n  Skipped (not Published):`);
+    skipped.forEach(p => {
+        console.log(`  ○ ${p.slug}  [${p.status}]`);
+    });
+}

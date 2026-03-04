@@ -1,11 +1,10 @@
 ---
 title: Data Engineering in 2026 and Beyond
 date: 2026-02-28
-tags: 
+tags:
 summary: Agentic coding is changing what data engineers do
+status: Work_In_Progress
 ---
-
-!! WORK IN PROGRESS !!
 
 # Data Engineering in 2026 and Beyond
 

@@ -3,6 +3,7 @@ title: Hello World - Data Engineering in the future
 date: 2026-02-28
 tags: meta, personal
 summary: Welcome to my blog. A space for thoughts on data engineering, side projects, and things I'm learning along the way.
+status: Published
 ---
 
 # Hello World
