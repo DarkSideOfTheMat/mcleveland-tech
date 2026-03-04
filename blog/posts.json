@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "hello-world",
+    "title": "Hello World - Data Engineering in the future",
+    "date": "2026-02-28",
+    "tags": [
+      "meta",
+      "personal"
+    ],
+    "summary": "Welcome to my blog. A space for thoughts on data engineering, side projects, and things I'm learning along the way.",
+    "status": "Published",
+    "wordCount": 1124,
+    "readingTime": "6 min read",
+    "file": "blog/posts/hello-world.md"
+  }
+]
