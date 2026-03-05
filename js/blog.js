@@ -50,8 +50,60 @@ window.addEventListener('scroll', () => {
             // Fenced code block
             if (line.match(/^```/)) {
                 var lang = line.slice(3).trim();
-                var code = [];
                 i++;
+
+                // Claude block — > lines render as strings, rest as markdown with Monokai accents
+                if (lang === 'Claude') {
+                    var claudeLines = [];
+                    while (i < lines.length && !lines[i].match(/^```/)) {
+                        var rawLine = lines[i];
+                        if (rawLine.match(/^>\s?/)) {
+                            var bubbleLines = [];
+                            while (i < lines.length && !lines[i].match(/^```/) && lines[i].match(/^>\s?/)) {
+                                bubbleLines.push(escapeHtml(lines[i].replace(/^>\s?/, '')));
+                                i++;
+                            }
+                            claudeLines.push('<div class="claude-bubble">' + bubbleLines.join('<br>') + '</div>');
+                            continue; // i already advanced past all > lines
+                        } else if (rawLine.match(/^\|/) && rawLine.match(/\|$/)) {
+                            var tableRows = [];
+                            while (i < lines.length && !lines[i].match(/^```/) && lines[i].match(/^\|/)) {
+                                tableRows.push(lines[i]);
+                                i++;
+                            }
+                            var parseTableRow = function(row) {
+                                return row.split('|').slice(1, -1).map(function(c) { return c.trim(); });
+                            };
+                            var isSeparator = function(row) { return /^\|[\s\-:|]+\|/.test(row); };
+                            var headers = parseTableRow(tableRows[0]);
+                            var bodyRows = tableRows.filter(function(r, idx) { return idx > 0 && !isSeparator(r); });
+                            var tableHtml = '<table class="claude-table"><thead><tr>' +
+                                headers.map(function(h) { return '<th>' + inlineFormat(h) + '</th>'; }).join('') +
+                                '</tr></thead><tbody>' +
+                                bodyRows.map(function(row) {
+                                    return '<tr>' + parseTableRow(row).map(function(c) {
+                                        return '<td>' + inlineFormat(c) + '</td>';
+                                    }).join('') + '</tr>';
+                                }).join('') +
+                                '</tbody></table>';
+                            claudeLines.push(tableHtml);
+                            continue; // i already advanced
+                        } else if (rawLine.trim() === '') {
+                            claudeLines.push('<div class="claude-spacer"></div>');
+                        } else {
+                            claudeLines.push('<div class="claude-line">' + inlineFormat(rawLine) + '</div>');
+                        }
+                        i++;
+                    }
+                    i++; // skip closing ```
+                    html.push('<div class="code-block claude-block">' +
+                        '<span class="code-lang">Claude</span>' +
+                        claudeLines.join('') +
+                        '</div>');
+                    continue;
+                }
+
+                var code = [];
                 while (i < lines.length && !lines[i].match(/^```/)) {
                     code.push(escapeHtml(lines[i]));
                     i++;

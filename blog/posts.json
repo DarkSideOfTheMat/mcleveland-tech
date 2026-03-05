@@ -1,5 +1,19 @@
 [
   {
+    "slug": "building-this-site-part-1",
+    "title": "Building This Site Pt. 1 - Simple Foundations",
+    "date": "2026-03-05",
+    "tags": [
+      "claude_code",
+      "building_this_site"
+    ],
+    "summary": "My first simple steps with Claude",
+    "status": "Published",
+    "wordCount": 67,
+    "readingTime": "1 min read",
+    "file": "blog/posts/building-this-site-part-1.md"
+  },
+  {
     "slug": "hello-world",
     "title": "Hello World - Data Engineering in the future",
     "date": "2026-02-28",
