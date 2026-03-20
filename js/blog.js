@@ -65,18 +65,20 @@ window.addEventListener('scroll', () => {
                             }
                             claudeLines.push('<div class="claude-bubble">' + bubbleLines.join('<br>') + '</div>');
                             continue; // i already advanced past all > lines
-                        } else if (rawLine.match(/^\|/) && rawLine.match(/\|$/)) {
+                        } else if (rawLine.trimStart().match(/^\|/)) {
                             var tableRows = [];
-                            while (i < lines.length && !lines[i].match(/^```/) && lines[i].match(/^\|/)) {
-                                tableRows.push(lines[i]);
+                            while (i < lines.length && !lines[i].match(/^```/) && lines[i].trimStart().match(/^\|/)) {
+                                tableRows.push(lines[i].trim().replace(/│/g, '|'));
                                 i++;
                             }
                             var parseTableRow = function(row) {
                                 return row.split('|').slice(1, -1).map(function(c) { return c.trim(); });
                             };
-                            var isSeparator = function(row) { return /^\|[\s\-:|]+\|/.test(row); };
+                            var isSeparator = function(row) {
+                                return parseTableRow(row).every(function(c) { return /^[-:\s]*$/.test(c); });
+                            };
                             var headers = parseTableRow(tableRows[0]);
-                            var bodyRows = tableRows.filter(function(r, idx) { return idx > 0 && !isSeparator(r); });
+                            var bodyRows = tableRows.filter(function(r) { return !isSeparator(r); }).slice(1);
                             var tableHtml = '<table class="claude-table"><thead><tr>' +
                                 headers.map(function(h) { return '<th>' + inlineFormat(h) + '</th>'; }).join('') +
                                 '</tr></thead><tbody>' +
