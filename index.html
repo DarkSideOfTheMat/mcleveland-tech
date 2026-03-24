@@ -209,7 +209,24 @@
             padding: 5rem 3rem 6rem;
         }
         .about-inner {
-            max-width: 680px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .about-text {
+            flex: 0 1 680px;
+            min-width: 0;
+        }
+        .about-spacer {
+            flex: 1;
+        }
+        .about-photo {
+            flex-shrink: 0;
+            width: 280px;
+        }
+        .about-photo img {
+            width: 100%;
+            border: 1px solid var(--border);
+            display: block;
         }
         .section-eyebrow {
             font-size: 0.65rem;
@@ -393,6 +410,8 @@
             }
 
             .about-section { padding: 3rem 1.5rem 4rem; }
+            .about-inner { flex-direction: column; }
+            .about-photo { width: 100%; max-width: 320px; }
 
             footer {
                 padding: 1.5rem;
@@ -446,23 +465,29 @@
         <!-- ABOUT -->
         <section class="about-section" id="about">
             <div class="about-inner">
-                <p class="section-eyebrow"><span aria-hidden="true">// </span>Background</p>
-                <h2 class="section-heading">About</h2>
-                <p class="about-bio">
-                    Data engineers build systems that make data trustworthy.<br>I studied Economics at UC Berkeley,
-                    then spent four years on Instagram's Ecosystems team rebuilding metrics that drive company decisions —
-                    Time Spent, Sessions, DAU. When I arrived, our flagship metric was two days late almost every week.
-                    We unified logging sources, parallelized jobs from Presto to Spark, and cut latency from >48 hours to
-                    ~16. <br> Good data engineering isn't about speed — it's about trust. The best systems are the ones
-                    that quietly make other people's work easier.
-                </p>
-                <div class="tech-chips">
-                    <span class="chip">Python</span>
-                    <span class="chip">SQL</span>
-                    <span class="chip">Spark</span>
-                    <span class="chip">Data Validation</span>
-                    <span class="chip">System Design</span>
-                    <span class="chip">Trillions of Events</span>
+                <div class="about-text">
+                    <p class="section-eyebrow"><span aria-hidden="true">// </span>Background</p>
+                    <h2 class="section-heading">About</h2>
+                    <p class="about-bio">
+                        Data engineers build systems that make data trustworthy.<br>I studied Economics at UC Berkeley where
+                        I learned the best data drives the most important decisions.<br><br>I've spent the last four years on Instagram's Ecosystems team rebuilding metrics that drive company decisions —
+                        Time Spent, Sessions, DAU. When I arrived, our flagship metric was two days late almost every week.
+                        We unified logging sources, parallelized jobs from Presto to Spark, and cut latency from >48 hours to
+                        ~16. <br><br> Good data engineering isn't about speed — it's about trust. The best systems are the ones
+                        that quietly make other people's work easier.
+                    </p>
+                    <div class="tech-chips">
+                        <span class="chip">Python</span>
+                        <span class="chip">SQL</span>
+                        <span class="chip">Spark</span>
+                        <span class="chip">Data Validation</span>
+                        <span class="chip">System Design</span>
+                        <span class="chip">Trillions of Events</span>
+                    </div>
+                </div>
+                <div class="about-spacer"></div>
+                <div class="about-photo">
+                    <img src="assets/me-and-the-boy.jpeg" alt="Matthew Cleveland">
                 </div>
             </div>
         </section>
