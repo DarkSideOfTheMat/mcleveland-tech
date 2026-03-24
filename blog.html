@@ -265,7 +265,7 @@
             letter-spacing: 0.04em;
             line-height: 1.05;
             margin: 0 0 2rem;
-            color: var(--text);
+            color: var(--mk-green);
         }
         .blog-article h2 {
             font-family: 'Bebas Neue', Impact, sans-serif;
@@ -273,14 +273,14 @@
             letter-spacing: 0.03em;
             line-height: 1.15;
             margin: 2.5rem 0 1rem;
-            color: var(--text);
+            color: var(--mk-orange);
         }
         .blog-article h3 {
             font-family: 'Bebas Neue', Impact, sans-serif;
             font-size: 1.2rem;
             letter-spacing: 0.03em;
             margin: 2rem 0 0.75rem;
-            color: var(--text);
+            color: var(--mk-purple);
         }
         .blog-article p {
             font-size: 0.85rem;
@@ -359,6 +359,54 @@
             text-transform: uppercase;
             color: var(--muted);
         }
+        /* ── CLAUDE BLOCK ───────────────────────────────────── */
+        .blog-article .claude-block {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.82rem;
+            line-height: 1.7;
+            padding-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .blog-article .claude-line {
+            color: var(--text);
+            min-height: 1.4em;
+        }
+        .blog-article .claude-spacer {
+            height: 0.4em;
+        }
+        .blog-article .claude-bubble {
+            align-self: flex-end;
+            background: var(--bg);
+            color: var(--color-string);
+            border: 1px solid color-mix(in srgb, var(--color-string) 25%, transparent);
+            padding: 0.45rem 0.85rem;
+            border-radius: 1rem 1rem 0.2rem 1rem;
+            max-width: 75%;
+            word-break: break-word;
+        }
+        .blog-article .claude-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.4rem 0;
+            font-size: 0.78rem;
+        }
+        .blog-article .claude-table th,
+        .blog-article .claude-table td {
+            padding: 0.3rem 0.75rem;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        .blog-article .claude-table th {
+            color: var(--accent);
+            background: var(--surface);
+        }
+        .blog-article .claude-block strong { color: var(--mk-orange); }
+        .blog-article .claude-block em     { color: var(--color-function); font-style: italic; }
+        .blog-article .claude-block code   { color: var(--color-keyword); background: none; padding: 0; }
+        .blog-article .claude-block a      { color: var(--color-type); }
+
         .blog-article hr {
             border: none;
             border-top: 1px solid var(--border);
@@ -419,6 +467,7 @@
 
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- NAV -->
     <nav id="nav">
@@ -435,11 +484,11 @@
         </button>
     </nav>
 
-    <main>
+    <main id="main-content">
 
         <!-- BLOG LISTING -->
         <section class="blog-section" id="blog-listing">
-            <p class="section-eyebrow">// Writing</p>
+            <p class="section-eyebrow"><span aria-hidden="true">// </span>Writing</p>
             <h1 class="section-heading">Blog</h1>
             <p class="blog-intro">
                 Thoughts on data engineering, side projects, and things I'm learning along the way.

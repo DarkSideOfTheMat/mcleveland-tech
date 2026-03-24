@@ -469,7 +469,12 @@ window.addEventListener('scroll', () => {
     // Init
     resize();
     initNodes();
-    animate();
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        animate();
+    } else {
+        // Render a single static frame for reduced-motion users
+        draw();
+    }
 
     // Resize handler
     window.addEventListener('resize', () => {
@@ -537,7 +542,8 @@ window.addEventListener('scroll', () => {
     if (!toggle || !panel) return;
 
     toggle.addEventListener('click', () => {
-        panel.classList.toggle('open');
+        const isOpen = panel.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
 
     const SLIDERS = [

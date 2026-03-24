@@ -209,7 +209,24 @@
             padding: 5rem 3rem 6rem;
         }
         .about-inner {
-            max-width: 680px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .about-text {
+            flex: 0 1 680px;
+            min-width: 0;
+        }
+        .about-spacer {
+            flex: 1;
+        }
+        .about-photo {
+            flex-shrink: 0;
+            width: 280px;
+        }
+        .about-photo img {
+            width: 100%;
+            border: 1px solid var(--border);
+            display: block;
         }
         .section-eyebrow {
             font-size: 0.65rem;
@@ -393,6 +410,8 @@
             }
 
             .about-section { padding: 3rem 1.5rem 4rem; }
+            .about-inner { flex-direction: column; }
+            .about-photo { width: 100%; max-width: 320px; }
 
             footer {
                 padding: 1.5rem;
@@ -405,6 +424,7 @@
 
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- NAV -->
     <nav id="nav">
@@ -421,12 +441,12 @@
         </button>
     </nav>
 
-    <main>
+    <main id="main-content">
 
         <!-- HERO -->
         <section class="hero">
             <div class="hero-left">
-                <p class="hero-eyebrow">// Data Engineer</p>
+                <p class="hero-eyebrow"><span aria-hidden="true">// </span>Data Engineer</p>
                 <h1 class="hero-name">
                     Matthew<br>
                     <span class="line-italic">Cleveland</span>
@@ -438,32 +458,36 @@
             </div>
 
             <div class="graph-container">
-                <canvas id="node-graph"></canvas>
+                <canvas id="node-graph" aria-hidden="true"></canvas>
             </div>
         </section>
 
         <!-- ABOUT -->
         <section class="about-section" id="about">
             <div class="about-inner">
-                <p class="section-eyebrow">// Background</p>
-                <h2 class="section-heading">About</h2>
-                <p class="about-bio">
-                    Studied Economics at UC Berkeley. Spent 4 years at Instagram maintaining
-                    company-critical engagement metrics — Time Spent, Sessions, Impressions, and DAU.
-                    Built pipelines in Python and SQL; data visualizations in Python, JavaScript, and R;
-                    and server-side logging in PHP and Go. Focused on systems with strict SLAs and
-                    tools that make engineers faster.
-                </p>
-                <div class="tech-chips">
-                    <span class="chip">Python</span>
-                    <span class="chip">SQL</span>
-                    <span class="chip">JavaScript</span>
-                    <span class="chip">R</span>
-                    <span class="chip">PHP</span>
-                    <span class="chip">Go</span>
-                    <span class="chip">Data Pipelines</span>
-                    <span class="chip">Visualizations</span>
-                    <span class="chip">SLAs</span>
+                <div class="about-text">
+                    <p class="section-eyebrow"><span aria-hidden="true">// </span>Background</p>
+                    <h2 class="section-heading">About</h2>
+                    <p class="about-bio">
+                        Data engineers build systems that make data trustworthy.<br>I studied Economics at UC Berkeley where
+                        I learned the best data drives the most important decisions.<br><br>I've spent the last four years on Instagram's Ecosystems team rebuilding metrics that drive company decisions —
+                        Time Spent, Sessions, DAU. When I arrived, our flagship metric was two days late almost every week.
+                        We unified logging sources, parallelized jobs from Presto to Spark, and cut latency from >48 hours to
+                        ~16. <br><br> Good data engineering isn't about speed — it's about trust. The best systems are the ones
+                        that quietly make other people's work easier.
+                    </p>
+                    <div class="tech-chips">
+                        <span class="chip">Python</span>
+                        <span class="chip">SQL</span>
+                        <span class="chip">Spark</span>
+                        <span class="chip">Data Validation</span>
+                        <span class="chip">System Design</span>
+                        <span class="chip">Trillions of Events</span>
+                    </div>
+                </div>
+                <div class="about-spacer"></div>
+                <div class="about-photo">
+                    <img src="assets/me-and-the-boy.jpeg" alt="Matthew Cleveland">
                 </div>
             </div>
         </section>
@@ -471,61 +495,61 @@
     </main>
 
     <!-- SETTINGS PANEL -->
-    <button class="settings-toggle" id="settings-toggle" aria-label="Node settings">
+    <button class="settings-toggle" id="settings-toggle" aria-label="Node settings" aria-expanded="false">
         <i class="fa-solid fa-sliders"></i>
     </button>
     <div class="settings-panel" id="settings-panel">
         <h3>Node Physics</h3>
         <div class="setting-group">
-            <label>Mouse Repulse Radius <span id="v-mouse-radius">100</span></label>
+            <label for="s-mouse-radius">Mouse Repulse Radius <span id="v-mouse-radius">100</span></label>
             <input type="range" id="s-mouse-radius" min="0" max="300" step="5" value="100">
         </div>
         <div class="setting-group">
-            <label>Mouse Repulse Strength <span id="v-mouse-strength">0.40</span></label>
+            <label for="s-mouse-strength">Mouse Repulse Strength <span id="v-mouse-strength">0.40</span></label>
             <input type="range" id="s-mouse-strength" min="0" max="2" step="0.05" value="0.40">
         </div>
         <div class="setting-group">
-            <label>Node Repulse Radius <span id="v-node-repulse-r">120</span></label>
+            <label for="s-node-repulse-r">Node Repulse Radius <span id="v-node-repulse-r">120</span></label>
             <input type="range" id="s-node-repulse-r" min="20" max="300" step="5" value="120">
         </div>
         <div class="setting-group">
-            <label>Node Repulse Strength <span id="v-node-repulse-s">0.06</span></label>
+            <label for="s-node-repulse-s">Node Repulse Strength <span id="v-node-repulse-s">0.06</span></label>
             <input type="range" id="s-node-repulse-s" min="0" max="0.3" step="0.005" value="0.06">
         </div>
         <div class="setting-group">
-            <label>Attract Strength <span id="v-attract-s">0.008</span></label>
+            <label for="s-attract-s">Attract Strength <span id="v-attract-s">0.008</span></label>
             <input type="range" id="s-attract-s" min="0" max="0.05" step="0.001" value="0.008">
         </div>
         <div class="setting-group">
-            <label>Attract Rest Distance <span id="v-attract-d">100</span></label>
+            <label for="s-attract-d">Attract Rest Distance <span id="v-attract-d">100</span></label>
             <input type="range" id="s-attract-d" min="20" max="300" step="5" value="100">
         </div>
         <div class="setting-group">
-            <label>Velocity Transfer <span id="v-vel-transfer">0.015</span></label>
+            <label for="s-vel-transfer">Velocity Transfer <span id="v-vel-transfer">0.015</span></label>
             <input type="range" id="s-vel-transfer" min="0" max="0.3" step="0.005" value="0.015">
         </div>
         <div class="setting-group">
-            <label>Damping <span id="v-damping">0.97</span></label>
+            <label for="s-damping">Damping <span id="v-damping">0.97</span></label>
             <input type="range" id="s-damping" min="0.85" max="1" step="0.005" value="0.97">
         </div>
         <div class="setting-group">
-            <label>Drift Force <span id="v-drift">0.06</span></label>
+            <label for="s-drift">Drift Force <span id="v-drift">0.06</span></label>
             <input type="range" id="s-drift" min="0" max="0.3" step="0.005" value="0.06">
         </div>
         <div class="setting-group">
-            <label>Orbit Force <span id="v-orbit">0.04</span></label>
+            <label for="s-orbit">Orbit Force <span id="v-orbit">0.04</span></label>
             <input type="range" id="s-orbit" min="0" max="0.2" step="0.005" value="0.04">
         </div>
         <div class="setting-group">
-            <label>Edge Margin <span id="v-edge-margin">100</span></label>
+            <label for="s-edge-margin">Edge Margin <span id="v-edge-margin">100</span></label>
             <input type="range" id="s-edge-margin" min="0" max="150" step="5" value="100">
         </div>
         <div class="setting-group">
-            <label>Edge Force <span id="v-edge-force">0.60</span></label>
+            <label for="s-edge-force">Edge Force <span id="v-edge-force">0.60</span></label>
             <input type="range" id="s-edge-force" min="0" max="1" step="0.05" value="0.60">
         </div>
         <div class="setting-group">
-            <label>Node Radius <span id="v-node-radius">4</span></label>
+            <label for="s-node-radius">Node Radius <span id="v-node-radius">4</span></label>
             <input type="range" id="s-node-radius" min="1" max="12" step="0.5" value="4">
         </div>
         <button class="settings-reset" id="settings-reset">Reset Defaults</button>
